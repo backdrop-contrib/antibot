@@ -1,3 +1,4 @@
 name = Antibot
 description = Prevent forms from being submitted without Javascript enabled
 core = 7.x
+configure = admin/config/system/antibot
