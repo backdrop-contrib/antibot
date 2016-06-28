@@ -27,9 +27,24 @@ function antibot_menu() {
  * Implements hook_form_alter().
  */
 function antibot_form_alter(&$form, &$form_state, $form_id) {
+  // Track if this form is antibot-enabled.
+  $enabled = FALSE;
+
   // See if this form should have antibot protection
   if (drupal_match_path($form_id, antibot_active_form_ids())) {
+    // Add a pre-render to activate antibot.
     $form['#pre_render'][] = 'antibot_form_pre_render';
+    // Mark as enabled.
+    $enabled = TRUE;
+  }
+
+  // Check if we should display the form ID.
+  if (variable_get('antibot_show_form_ids', FALSE)) {
+    // Check if the user has permission to view the form ID.
+    if (user_access('administer site configuration')) {
+      // Display the form ID and status.
+      drupal_set_message("{$form_id}: " . ($enabled ? t('active') : t('inactive')));
+    }
   }
 }
 

@@ -5,4 +5,5 @@
  */
 function antibot_uninstall() {
   variable_del('antibot_form_ids');
+  variable_del('antibot_show_form_ids');
 }
