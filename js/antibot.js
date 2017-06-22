@@ -5,23 +5,29 @@
  */
 (function ($) {
   Drupal.antibot = {};
-  
+
   Drupal.behaviors.antibot = {
     attach: function (context) {
       // Assume the user is not human, despite JS being enabled
       Drupal.settings.antibot.human = false;
-      
+
       // Display the hidden forms
       $('.antibot-hidden', context).show();
       // Remove the "no javascript" messages
       $('.antibot-no-js', context).remove();
-      
+
       // Wait for a mouse to move, indicating they are human
       $('body').mousemove(function() {
         // Unlock the forms
         Drupal.antibot.unlockForms();
       });
-      
+
+      // Wait for a touch move event, indicating that they are human
+      $('body').bind('touchmove', function() {
+        // Unlock the forms
+        Drupal.antibot.unlockForms();
+      });
+
       // A tab or enter key pressed can also indicate they are human
       $('body').keydown(function(e) {
         if ((e.keyCode == 9) || (e.keyCode == 13)) {
@@ -31,7 +37,7 @@
       });
     }
   }
-  
+
   /**
    * Revert the action on the protected forms to what it was originally
    * set to.
