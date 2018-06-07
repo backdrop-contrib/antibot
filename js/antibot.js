@@ -11,11 +11,6 @@
       // Assume the user is not human, despite JS being enabled
       Drupal.settings.antibot.human = false;
 
-      // Display the hidden forms
-      $('.antibot-hidden', context).show();
-      // Remove the "no javascript" messages
-      $('.antibot-no-js', context).remove();
-
       // Wait for a mouse to move, indicating they are human
       $('body').mousemove(function() {
         // Unlock the forms

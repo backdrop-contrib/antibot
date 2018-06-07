@@ -24,6 +24,20 @@ function antibot_menu() {
 }
 
 /**
+ * Implements hook_theme().
+ */
+function antibot_theme() {
+  $theme = array();
+  $theme['antibot_no_js'] = array(
+    'variables' => array(
+      'message' => NULL,
+    ),
+    'template' => 'templates/antibot-no-js',
+  );
+  return $theme;
+}
+
+/**
  * Implements hook_form_alter().
  */
 function antibot_form_alter(&$form, &$form_state, $form_id) {
@@ -32,8 +46,9 @@ function antibot_form_alter(&$form, &$form_state, $form_id) {
 
   // See if this form should have antibot protection
   if (drupal_match_path($form_id, antibot_active_form_ids())) {
-    // Add a pre-render to activate antibot.
-    $form['#pre_render'][] = 'antibot_form_pre_render';
+    // Add antibot protection.
+    antibot_protect_form($form);
+
     // Mark as enabled.
     $enabled = TRUE;
   }
@@ -46,6 +61,17 @@ function antibot_form_alter(&$form, &$form_state, $form_id) {
       drupal_set_message("{$form_id}: " . ($enabled ? t('active') : t('inactive')));
     }
   }
+}
+
+/**
+ * Helper function to enable Antibot protection for a given form.
+ *
+ * @param array &$form
+ *   The form to enable Antibot protection on.
+ */
+function antibot_protect_form(array &$form) {
+  // Add a pre-render to activate antibot.
+  $form['#pre_render'][] = 'antibot_form_pre_render';
 }
 
 /**
@@ -73,9 +99,9 @@ function antibot_active_form_ids() {
 }
 
 /**
- * Pre-render callback on forms that should have Antibot protection.
+ * Pre-render callback on forms that have Antibot protection.
  *
- * @see antibot_form_alter().
+ * @see antibot_protect_form().
  */
 function antibot_form_pre_render($form) {
   // Attach the needed Javascript to re-enable this form
@@ -100,16 +126,22 @@ function antibot_form_pre_render($form) {
   // Change the action so the submission does not go through
   $form['#action'] = base_path() . 'antibot';
 
-  // Hide the form in the event that the user does not have Javascript.
-  // If they do, it will be restored.
-  $form['#attributes']['style'] = 'display: none;';
-  $form['#attributes']['class'][] = 'antibot-hidden';
+  // Add a class to the form.
+  $form['#attributes']['class'][] = 'antibot';
 
-  // Provide a message in the event that the user does not have Javascript.
+  // Provide a message in the event that the user does not have JavaScript.
+  $no_js = array(
+    '#theme' => 'antibot_no_js',
+    '#weight' => -500,
+    '#message' => t('You must have JavaScript enabled to use this form.'),
+  );
+  $no_js = drupal_render($no_js);
+
+  // Inject the message in to the form.
   if (!isset($form['#prefix'])) {
     $form['#prefix'] = '';
   }
-  $form['#prefix'] = '<div class="antibot-no-js messages warning">' . t('You must have Javascript enabled to use this form.') . '</div>' . $form['#prefix'];
+  $form['#prefix'] = $no_js . $form['#prefix'];
 
   return $form;
 }
