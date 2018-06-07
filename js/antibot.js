@@ -40,9 +40,16 @@
   Drupal.antibot.unlockForms = function() {
     // Act only if we haven't yet verified this user as being human
     if (!Drupal.settings.antibot.human) {
-      // Iterate all antibot form actions that we need to revert
-      for (n in Drupal.settings.antibot.actions) {
-        $('form#' + n).attr('action', Drupal.settings.antibot.actions[n]);
+      // Iterate all antibot forms that we need to unlock
+      for (id in Drupal.settings.antibot.forms) {
+        // Switch the action to the original value.
+        $('form#' + id).attr('action', Drupal.settings.antibot.forms[id].action);
+
+        // Check if a key is required.
+        if (Drupal.settings.antibot.forms[id].key) {
+          // Inject the key value.
+          $('form#' + id).find('input[name="antibot_key"]').val(Drupal.settings.antibot.forms[id].key);
+        }
       }
       // Mark this user as being human
       Drupal.settings.antibot.human = true;

@@ -69,7 +69,28 @@ function antibot_form_alter(&$form, &$form_state, $form_id) {
  * @param array &$form
  *   The form to enable Antibot protection on.
  */
-function antibot_protect_form(array &$form) {
+function antibot_protect_form(&$form) {
+  // Ensure the form has an ID set.
+  if (!empty($form['#form_id'])) {
+    // Generate a key for this form.
+    $key = md5($form['#form_id']);
+
+    // Store the key in the form.
+    $form['#antibot_key'] = $key;
+
+    // Add a hidden value which will receive the key via JS.
+    // The point of this is to add an additonal layer of protection for remotely
+    // POSTed forms. Since the key will not be present in that scenario, the
+    // remote post will fail.
+    $form['antibot_key'] = array(
+      '#type' => 'hidden',
+      '#value' => '',
+    );
+
+    // Add validation for the key.
+    $form['#validate'][] = 'antibot_form_validation';
+  }
+
   // Add a pre-render to activate antibot.
   $form['#pre_render'][] = 'antibot_form_pre_render';
 }
@@ -112,8 +133,11 @@ function antibot_form_pre_render($form) {
           'type' => 'setting',
           'data' => array(
             'antibot' => array(
-              'actions' => array(
-                $form['#id'] => $form['#action'],
+              'forms' => array(
+                $form['#id'] => array(
+                  'action' => $form['#action'],
+                  'key' => !empty($form['#antibot_key']) ? $form['#antibot_key'] : NULL,
+                ),
               ),
             ),
           ),
@@ -144,4 +168,20 @@ function antibot_form_pre_render($form) {
   $form['#prefix'] = $no_js . $form['#prefix'];
 
   return $form;
+}
+
+/**
+ * Validation to Antibot-protected forms.
+ *
+ * @see antibot_protect_form()
+ */
+function antibot_form_validation($form, &$form_state) {
+  // Check if a key was provided in the form.
+  if (!empty($form['#antibot_key'])) {
+    // Validate the key.
+    if ($form['#antibot_key'] != $form_state['input']['antibot_key']) {
+      // Prevent the form from submitting.
+      form_set_error('', t('Submission failed. Please reload the page and try again.'));
+    }
+  }
 }
