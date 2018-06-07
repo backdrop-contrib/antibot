@@ -182,7 +182,7 @@ function antibot_form_pre_render($form) {
  */
 function antibot_form_validation($form, &$form_state) {
   // Check if a key was provided in the form.
-  if (!empty($form['#antibot_key'])) {
+  if (!empty($form['#antibot_key']) && isset($form_state['input']['antibot_key'])) {
     // Validate the key.
     if ($form['#antibot_key'] != $form_state['input']['antibot_key']) {
       // Prevent the form from submitting.
