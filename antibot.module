@@ -130,7 +130,7 @@ function antibot_active_form_ids() {
  * @see antibot_protect_form()
  */
 function antibot_form_pre_render($form) {
-  // Attach the needed Javascript to re-enable this form.
+  // Attach the needed JavaScript to re-enable this form.
   $form['antibot'] = array(
     '#attached' => array(
       'js' => array(

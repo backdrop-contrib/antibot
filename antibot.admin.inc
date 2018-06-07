@@ -12,7 +12,7 @@ function antibot_admin_settings($form, &$form_state) {
   $form['message'] = array(
     '#type' => 'html_tag',
     '#tag' => 'h3',
-    '#value' => t('Antibot requires that a user has Javascript enabled in order to use and submit a given form.'),
+    '#value' => t('Antibot requires that a user has JavaScript enabled in order to use and submit a given form.'),
   );
   $form['antibot_form_ids'] = array(
     '#type' => 'textarea',
