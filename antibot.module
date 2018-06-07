@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Attempt to prevent robotic form submissions and spam.
+ */
+
+/**
  * Implements hook_menu().
  */
 function antibot_menu() {
@@ -44,7 +49,7 @@ function antibot_form_alter(&$form, &$form_state, $form_id) {
   // Track if this form is antibot-enabled.
   $enabled = FALSE;
 
-  // See if this form should have antibot protection
+  // See if this form should have antibot protection.
   if (drupal_match_path($form_id, antibot_active_form_ids())) {
     // Add antibot protection.
     antibot_protect_form($form);
@@ -69,7 +74,7 @@ function antibot_form_alter(&$form, &$form_state, $form_id) {
  * @param array &$form
  *   The form to enable Antibot protection on.
  */
-function antibot_protect_form(&$form) {
+function antibot_protect_form(array &$form) {
   // Ensure the form has an ID set.
   if (!empty($form['#form_id'])) {
     // Generate a key for this form.
@@ -98,14 +103,14 @@ function antibot_protect_form(&$form) {
 /**
  * Determine the form IDs that should contain Antibot protection.
  *
- * @return
+ * @return string
  *   A list of form IDs that can contain wildcard (*) characters. The
  *   form IDs are separated by newline characters.
  */
 function antibot_active_form_ids() {
-  // See if we have IDs set
+  // See if we have IDs set.
   if (!($ids = variable_get('antibot_form_ids', NULL))) {
-    // Provide default IDs
+    // Provide default IDs.
     $ids = implode("\n", array(
       'comment_node_*',
       'user_login',
@@ -122,10 +127,10 @@ function antibot_active_form_ids() {
 /**
  * Pre-render callback on forms that have Antibot protection.
  *
- * @see antibot_protect_form().
+ * @see antibot_protect_form()
  */
 function antibot_form_pre_render($form) {
-  // Attach the needed Javascript to re-enable this form
+  // Attach the needed Javascript to re-enable this form.
   $form['antibot'] = array(
     '#attached' => array(
       'js' => array(
@@ -147,7 +152,7 @@ function antibot_form_pre_render($form) {
     ),
   );
 
-  // Change the action so the submission does not go through
+  // Change the action so the submission does not go through.
   $form['#action'] = base_path() . 'antibot';
 
   // Add a class to the form.

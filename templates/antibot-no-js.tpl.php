@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Template for printing a message to users without JavaScript enabled.

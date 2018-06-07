@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Admin callbacks and functions.
+ */
+
+/**
  * Admin settings form.
  */
 function antibot_admin_settings($form, &$form_state) {
@@ -21,6 +26,6 @@ function antibot_admin_settings($form, &$form_state) {
     '#default_value' => variable_get('antibot_show_form_ids', 0),
     '#description' => t('When enabled, the form IDs of all forms on every page will be displayed to any user with permission to access these settings. Also displayed will be whether or not Antibot is enabled for each form. This should only be turned on temporarily in order to easily determine the form IDs to use.'),
   );
-  
+
   return system_settings_form($form);
 }
