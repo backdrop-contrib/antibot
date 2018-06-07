@@ -182,9 +182,15 @@ function antibot_form_pre_render($form) {
  */
 function antibot_form_validation($form, &$form_state) {
   // Check if a key was provided in the form.
-  if (!empty($form['#antibot_key']) && isset($form_state['input']['antibot_key'])) {
+  if (!empty($form['#antibot_key'])) {
+    // Views exposed forms will initially load and submit without the key.
+    if (($form['#form_id'] == 'views_exposed_form') && empty($form_state['input']['antibot_key'])) {
+      // We must allow this.
+      return;
+    }
+
     // Validate the key.
-    if ($form['#antibot_key'] != $form_state['input']['antibot_key']) {
+    if (empty($form_state['input']['antibot_key']) || ($form['#antibot_key'] != $form_state['input']['antibot_key'])) {
       // Prevent the form from submitting.
       form_set_error('', t('Submission failed. Please reload the page and try again.'));
     }
