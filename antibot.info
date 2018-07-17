@@ -2,4 +2,5 @@ type = module
 name = Antibot
 description = Prevent forms from being submitted without JavaScript enabled
 backdrop = 1.x
+package = Spam control
 configure = admin/config/system/antibot
