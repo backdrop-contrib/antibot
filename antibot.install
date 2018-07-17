@@ -5,9 +5,15 @@
  */
 
 /**
- * Implements hook_uninstall().
+ * Implements hook_update_N(). Switch from varaibles to config.
  */
-function antibot_uninstall() {
-  variable_del('antibot_form_ids');
-  variable_del('antibot_show_form_ids');
+function antibot_update_1000() {
+  $config = config('antibot.settings');
+  $config->set('form_ids', update_variable_get('antibot_form_ids', array()));
+  $config->set('show_form_ids', update_variable_get('antibot_show_form_ids', FALSE));
+  $config->save();
+
+  // Delete the legacy variables.
+  update_variable_del('antibot_form_ids');
+  update_variable_del('antibot_show_form_ids');
 }

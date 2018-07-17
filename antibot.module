@@ -5,6 +5,17 @@
  */
 
 /**
+ * Implements hook_config_info().
+ */
+function antibot_config_info() {
+  $prefixes['antibot.settings'] = array(
+    'label' => t('Antibot Settings'),
+    'group' => t('Configuration'),
+  );
+  return $prefixes;
+}
+
+/**
  * Implements hook_menu().
  */
 function antibot_menu() {
@@ -58,7 +69,7 @@ function antibot_form_alter(&$form, &$form_state, $form_id) {
   }
 
   // Check if we should display the form ID.
-  if (variable_get('antibot_show_form_ids', FALSE)) {
+  if (config_get('antibot.settings', 'show_form_ids')) {
     // Check if the user has permission to view the form ID.
     if (user_access('administer site configuration')) {
       // Display the form ID and status.
@@ -107,8 +118,9 @@ function antibot_protect_form(array &$form) {
  *   form IDs are separated by newline characters.
  */
 function antibot_active_form_ids() {
+  $config = config('antibot.settings');
   // See if we have IDs set.
-  if (!($ids = variable_get('antibot_form_ids', NULL))) {
+  if (!($ids = $config->get('form_ids'))) {
     // Provide default IDs.
     $ids = implode("\n", array(
       'comment_node_*',
