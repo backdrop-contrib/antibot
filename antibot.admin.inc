@@ -15,6 +15,7 @@ function antibot_admin_settings($form, &$form_state) {
     '#tag' => 'h3',
     '#value' => t('Antibot requires that a user has JavaScript enabled in order to use and submit a given form.'),
   );
+  // @todo replace this with a more user-friendly way to define common forms.
   $form['form_ids'] = array(
     '#type' => 'textarea',
     '#title' => t('Form IDs'),
