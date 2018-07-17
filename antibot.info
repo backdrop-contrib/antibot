@@ -1,4 +1,5 @@
+type = module
 name = Antibot
 description = Prevent forms from being submitted without JavaScript enabled
-core = 7.x
+backdrop = 1.x
 configure = admin/config/system/antibot

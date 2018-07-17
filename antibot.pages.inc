@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Page callbacks and functions.

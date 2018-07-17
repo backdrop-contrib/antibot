@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Attempt to prevent robotic form submissions and spam.
@@ -20,7 +19,7 @@ function antibot_menu() {
   $items['admin/config/system/antibot'] = array(
     'title' => 'Antibot',
     'description' => 'Configure Antibot form protection.',
-    'page callback' => 'drupal_get_form',
+    'page callback' => 'backdrop_get_form',
     'page arguments' => array('antibot_admin_settings'),
     'access arguments' => array('administer site configuration'),
     'file' => 'antibot.admin.inc',
@@ -50,7 +49,7 @@ function antibot_form_alter(&$form, &$form_state, $form_id) {
   $enabled = FALSE;
 
   // See if this form should have antibot protection.
-  if (drupal_match_path($form_id, antibot_active_form_ids())) {
+  if (backdrop_match_path($form_id, antibot_active_form_ids())) {
     // Add antibot protection.
     antibot_protect_form($form);
 
@@ -63,7 +62,7 @@ function antibot_form_alter(&$form, &$form_state, $form_id) {
     // Check if the user has permission to view the form ID.
     if (user_access('administer site configuration')) {
       // Display the form ID and status.
-      drupal_set_message("{$form_id}: " . ($enabled ? t('active') : t('inactive')));
+      backdrop_set_message("{$form_id}: " . ($enabled ? t('active') : t('inactive')));
     }
   }
 }
@@ -147,7 +146,7 @@ function antibot_form_pre_render($form) {
             ),
           ),
         ),
-        drupal_get_path('module', 'antibot') . '/js/antibot.js',
+        backdrop_get_path('module', 'antibot') . '/js/antibot.js',
       ),
     ),
   );
@@ -164,7 +163,7 @@ function antibot_form_pre_render($form) {
     '#weight' => -500,
     '#message' => t('You must have JavaScript enabled to use this form.'),
   );
-  $no_js = drupal_render($no_js);
+  $no_js = backdrop_render($no_js);
 
   // Inject the message in to the form.
   if (!isset($form['#prefix'])) {

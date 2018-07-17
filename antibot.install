@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Install/uninstall/update hooks and functions.
