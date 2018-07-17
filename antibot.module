@@ -73,7 +73,16 @@ function antibot_form_alter(&$form, &$form_state, $form_id) {
     // Check if the user has permission to view the form ID.
     if (user_access('administer site configuration')) {
       // Display the form ID and status.
-      backdrop_set_message("{$form_id}: " . ($enabled ? t('active') : t('inactive')));
+        // @todo switch to info message type.
+      if ($enabled) {
+        $message = t('Antibot is <strong>active</strong> for form ID: @id.', array('@id' => $form_id));
+        backdrop_set_message($message);
+      }
+      else {
+        $message = t('Antibot is <strong>not</strong> active for form ID: @id.', array('@id' => $form_id));
+        backdrop_set_message($message);
+      }
+
     }
   }
 }
