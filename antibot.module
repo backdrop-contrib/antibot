@@ -112,8 +112,8 @@ function antibot_protect_form(array &$form) {
       '#value' => '',
     );
 
-    // Add validation for the key at the beginning of validation.
-    array_unshift($form['#validate'], 'antibot_form_validation');
+    // Add validation for the key.
+    $form['#validate'][] = 'antibot_form_validation';
   }
 
   // Add a pre-render to activate antibot.
